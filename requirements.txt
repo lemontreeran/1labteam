@@ -6,3 +6,4 @@ scikit-optimize==0.9.0
 opentrons
 notebook
 openai
+google-adk
