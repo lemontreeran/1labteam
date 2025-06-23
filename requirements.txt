@@ -7,3 +7,4 @@ opentrons
 notebook
 openai
 google-adk
+uvicorn
