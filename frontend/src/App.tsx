@@ -19,7 +19,7 @@ function App() {
         return <AgentPanel />;
       case 'experiments':
         return <ExperimentData />;
-      case 'pipeline':
+      case 'console':
         return <PipelineStatus />;
       case 'labware':
         return <LabwareDesign />;

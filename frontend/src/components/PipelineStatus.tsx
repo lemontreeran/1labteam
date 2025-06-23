@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Play, 
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 
 const PipelineStatus: React.FC = () => {
+  const [showDevUI, setShowDevUI] = useState(false); // <-- add control variable
   const pipelineSteps = [
     {
       id: 'atlas',
@@ -131,58 +132,76 @@ const PipelineStatus: React.FC = () => {
             <Download className="h-4 w-4" />
             <span>Export Logs</span>
           </button>
-          <button className="btn-primary flex items-center space-x-2">
+          <button className="btn-primary flex items-center space-x-2"
+            onClick={() => setShowDevUI(true)}>
             <Play className="h-4 w-4" />
-            <span>Run Pipeline</span>
+            <span>Workflow</span>
           </button>
         </div>
       </div>
 
-      {/* Current Pipeline Status */}
+      {/* Current Pipeline Execution View */}
       <div className="card">
         <div className="card-header">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-slate-900">Current Execution</h3>
-              <p className="text-sm text-slate-600">Pipeline run started at 14:30:22</p>
+              <p className="text-sm text-slate-600">
+                {showDevUI
+                  ? "Live agent execution via ADK Dev UI"
+                  : "Pipeline run started at 14:30:22"}
+              </p>
             </div>
-            <div className="flex items-center space-x-2 bg-blue-50 px-3 py-1.5 rounded-full">
-              <RefreshCw className="h-4 w-4 text-blue-600 animate-spin" />
-              <span className="text-sm font-medium text-blue-700">Running</span>
-            </div>
+            {!showDevUI && (
+              <div className="flex items-center space-x-2 bg-blue-50 px-3 py-1.5 rounded-full">
+                <RefreshCw className="h-4 w-4 text-blue-600 animate-spin" />
+                <span className="text-sm font-medium text-blue-700">Running</span>
+              </div>
+            )}
           </div>
         </div>
+
         <div className="card-content">
-          <div className="space-y-4">
-            {pipelineSteps.map((step, index) => (
-              <motion.div
-                key={step.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`p-4 rounded-lg border-2 ${getStatusColor(step.status)}`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    {getStatusIcon(step.status)}
-                    <div>
-                      <h4 className="font-semibold text-slate-900">{step.name}</h4>
-                      <p className="text-sm text-slate-600">{step.description}</p>
+          {showDevUI ? (
+            <iframe
+              src="http://127.0.0.1:8000/dev-ui/?app=agents"
+              width="100%"
+              height="800px"
+              className="rounded-md border border-slate-200"
+              style={{ background: '#fff' }}
+            />
+          ) : (
+            <div className="space-y-4">
+              {pipelineSteps.map((step, index) => (
+                <motion.div
+                  key={step.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`p-4 rounded-lg border-2 ${getStatusColor(step.status)}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      {getStatusIcon(step.status)}
+                      <div>
+                        <h4 className="font-semibold text-slate-900">{step.name}</h4>
+                        <p className="text-sm text-slate-600">{step.description}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-slate-900">{step.duration}</p>
+                      <p className="text-xs text-slate-500">{step.output}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-slate-900">{step.duration}</p>
-                    <p className="text-xs text-slate-500">{step.output}</p>
-                  </div>
-                </div>
-                {index < pipelineSteps.length - 1 && (
-                  <div className="flex justify-center mt-4">
-                    <ArrowRight className="h-4 w-4 text-slate-400" />
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </div>
+                  {index < pipelineSteps.length - 1 && (
+                    <div className="flex justify-center mt-4">
+                      <ArrowRight className="h-4 w-4 text-slate-400" />
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

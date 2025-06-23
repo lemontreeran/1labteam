@@ -19,7 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'agents', label: 'AI Agents', icon: Users },
     { id: 'experiments', label: 'Experiments', icon: FlaskConical },
-    { id: 'pipeline', label: 'Pipeline', icon: GitBranch },
+    { id: 'console', label: 'Console', icon: GitBranch },
     { id: 'labware', label: 'Labware Design', icon: Boxes },
   ];
 
